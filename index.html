@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>画像・PDF圧縮ツール</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>画像・PDF圧縮ツール</h1>
+      <p class="subtitle">ブラウザ上で完結・アップロード不要</p>
+    </header>
+
+    <!-- アップロード領域 -->
+    <div class="upload-area" id="uploadArea">
+      <div class="upload-icon">&#128444;</div>
+      <p class="upload-text">ドラッグ＆ドロップ または クリックして選択</p>
+      <p class="upload-sub">JPEG・PNG・PDF 対応</p>
+      <input type="file" id="fileInput" accept="image/jpeg,image/png,application/pdf" hidden>
+    </div>
+
+    <!-- 設定・プレビュー（ファイル選択後に表示） -->
+    <div class="main-panel" id="mainPanel" hidden>
+
+      <!-- 設定パネル -->
+      <section class="settings-panel">
+        <h2>設定</h2>
+
+        <!-- 画像専用設定 -->
+        <div id="imageSettings">
+          <div class="setting-group">
+            <label>出力形式</label>
+            <div class="format-buttons">
+              <button class="format-btn active" data-format="image/jpeg">JPEG</button>
+              <button class="format-btn" data-format="image/png">PNG</button>
+            </div>
+          </div>
+
+          <div class="setting-group" id="qualityGroup">
+            <label>品質 <span id="qualityValue">80</span>%</label>
+            <input type="range" id="qualitySlider" min="1" max="100" value="80">
+            <p class="hint">JPEGのみ有効。数値が低いほどファイルサイズが小さくなります</p>
+          </div>
+
+          <div class="setting-group">
+            <label>最大サイズ（アスペクト比を維持）</label>
+            <div class="size-inputs">
+              <div class="size-input-wrap">
+                <input type="number" id="maxWidth" placeholder="最大幅" min="1" max="10000">
+                <span>px</span>
+              </div>
+              <span class="size-separator">×</span>
+              <div class="size-input-wrap">
+                <input type="number" id="maxHeight" placeholder="最大高さ" min="1" max="10000">
+                <span>px</span>
+              </div>
+            </div>
+            <p class="hint">空欄のままにするとリサイズしません</p>
+          </div>
+        </div>
+
+        <!-- PDF専用設定 -->
+        <div id="pdfSettings" hidden>
+          <div class="setting-group">
+            <label>解像度（DPI）</label>
+            <div class="dpi-buttons">
+              <button class="dpi-btn" data-dpi="72">72 dpi<span class="dpi-label">最小</span></button>
+              <button class="dpi-btn" data-dpi="96">96 dpi<span class="dpi-label">小</span></button>
+              <button class="dpi-btn active" data-dpi="150">150 dpi<span class="dpi-label">中</span></button>
+              <button class="dpi-btn" data-dpi="300">300 dpi<span class="dpi-label">高品質</span></button>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <label>JPEG品質 <span id="pdfQualityValue">80</span>%</label>
+            <input type="range" id="pdfQualitySlider" min="1" max="100" value="80">
+            <p class="hint">数値が低いほどファイルサイズが小さくなります</p>
+          </div>
+
+          <div class="warning-badge">
+            <span class="warning-icon">&#9888;</span>
+            テキストはラスタライズされ、検索不可になります
+          </div>
+        </div>
+
+        <!-- プログレスバー（PDF圧縮中に表示） -->
+        <div id="progressArea" hidden>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+          </div>
+          <p class="progress-label" id="progressLabel">処理中...</p>
+        </div>
+
+        <button class="btn-primary" id="compressBtn">圧縮する</button>
+      </section>
+
+      <!-- プレビューパネル -->
+      <section class="preview-panel">
+        <div class="preview-box">
+          <h3>変換前</h3>
+          <div class="preview-img-wrap">
+            <img id="originalPreview" alt="変換前プレビュー">
+          </div>
+          <div class="preview-info">
+            <span id="originalSize">-</span>
+            <span id="originalDimensions">-</span>
+            <span id="pdfPageCount" hidden></span>
+          </div>
+        </div>
+
+        <div class="preview-arrow">&#10132;</div>
+
+        <div class="preview-box">
+          <h3>変換後</h3>
+          <div class="preview-img-wrap">
+            <img id="compressedPreview" alt="変換後プレビュー">
+            <div class="preview-placeholder" id="previewPlaceholder">圧縮後のプレビューがここに表示されます</div>
+          </div>
+          <div class="preview-info">
+            <span id="compressedSize">-</span>
+            <span id="compressedDimensions">-</span>
+            <span id="reductionRate" class="reduction-badge"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ダウンロードボタン -->
+      <div class="download-area" id="downloadArea" hidden>
+        <button class="btn-download" id="downloadBtn">ダウンロード</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
