@@ -21,6 +21,35 @@ body {
   margin: 0 auto;
 }
 
+/* ── Site Nav ─────────────────────────── */
+.site-nav {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.site-nav a {
+  font-size: 0.85rem;
+  color: #6e6e73;
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.site-nav a:hover {
+  background: #e5e5ea;
+  color: #1d1d1f;
+}
+
+.site-nav a.active {
+  background: #0071e3;
+  color: #fff;
+  font-weight: 600;
+}
+
 /* ── Header ───────────────────────────── */
 header {
   text-align: center;
@@ -70,6 +99,15 @@ header h1 {
 .upload-sub {
   color: #6e6e73;
   font-size: 0.85rem;
+}
+
+/* ── Privacy Note ─────────────────────── */
+.privacy-note {
+  text-align: center;
+  font-size: 0.78rem;
+  color: #8e8e93;
+  margin-top: 12px;
+  line-height: 1.6;
 }
 
 /* ── Main Panel ───────────────────────── */
@@ -423,5 +461,58 @@ header h1 {
     padding-top: 0;
     transform: rotate(90deg);
     text-align: center;
+  }
+}
+
+/* ── About Section ────────────────────── */
+.about-section {
+  background: #fff;
+  border-radius: 16px;
+  padding: 28px 32px;
+  margin-top: 20px;
+}
+
+.about-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1d1d1f;
+  margin-bottom: 14px;
+}
+
+.about-body p {
+  font-size: 0.88rem;
+  color: #3a3a3c;
+  line-height: 1.8;
+  margin-bottom: 10px;
+}
+
+.about-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.about-list li {
+  font-size: 0.85rem;
+  color: #3a3a3c;
+  line-height: 1.6;
+  padding-left: 1em;
+  position: relative;
+}
+
+.about-list li::before {
+  content: "·";
+  position: absolute;
+  left: 0;
+  color: #0071e3;
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .about-section {
+    padding: 22px 18px;
   }
 }
