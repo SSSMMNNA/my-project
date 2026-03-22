@@ -81,6 +81,79 @@
       font-size: 0.85rem;
     }
 
+    /* ── About Section ────────────────────── */
+    .about-section,
+    .related-section {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px;
+      margin-top: 16px;
+    }
+
+    .about-title,
+    .related-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1d1d1f;
+      margin-bottom: 12px;
+    }
+
+    .about-body p {
+      font-size: 0.88rem;
+      color: #3a3a3c;
+      line-height: 1.8;
+      margin-bottom: 8px;
+    }
+
+    .about-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .related-tools {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .tool-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: #f5f5f7;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #1d1d1f;
+      transition: background 0.15s;
+    }
+
+    .tool-card:hover {
+      background: #e5e5ea;
+    }
+
+    .tool-card-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .tool-card-text strong {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #1d1d1f;
+    }
+
+    .tool-card-text span {
+      font-size: 0.78rem;
+      color: #6e6e73;
+    }
+
+    @media (max-width: 600px) {
+      .related-tools { grid-template-columns: 1fr; }
+      .about-section,
+      .related-section { padding: 20px 18px; }
+    }
+
     /* ── Privacy Note ─────────────────────── */
     .privacy-note {
       text-align: center;
@@ -419,6 +492,36 @@
     </div>
 
   </div>
+
+  <!-- このツールについて -->
+  <section class="about-section">
+    <h2 class="about-title">このツールについて</h2>
+    <div class="about-body">
+      <p>WebP変換ツールは、JPEG・PNG・GIF形式の画像をWebP形式へ無料で一括変換できるブラウザ完結型のツールです。WebPはGoogleが開発した次世代画像フォーマットで、JPEGやPNGと比較してファイルサイズを平均25〜35%削減しながら、同等の画質を維持できます。</p>
+      <p>品質スライダー（0〜100%）で圧縮率を自由に調整でき、複数ファイルを一括変換して個別または一括ダウンロードが可能です。Webサイトの表示速度改善やSEO対策に最適です。すべての処理はブラウザ内で完結するため、ファイルが外部に送信されることは一切ありません。</p>
+    </div>
+  </section>
+
+  <!-- 関連ツール -->
+  <section class="related-section">
+    <h2 class="related-title">他のツールも使ってみる</h2>
+    <div class="related-tools">
+      <a href="/" class="tool-card">
+        <span class="tool-card-icon">🗜️</span>
+        <div class="tool-card-text">
+          <strong>画像・PDF圧縮</strong>
+          <span>JPEG・PNG・PDFをブラウザ上で圧縮</span>
+        </div>
+      </a>
+      <a href="/qr/" class="tool-card">
+        <span class="tool-card-icon">⬛</span>
+        <div class="tool-card-text">
+          <strong>QRコード生成</strong>
+          <span>URLやテキストをQRコードに変換</span>
+        </div>
+      </a>
+    </div>
+  </section>
 
   <script>
     const uploadArea = document.getElementById('uploadArea');
