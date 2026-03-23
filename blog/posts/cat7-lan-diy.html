@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7073636277654421"
+     crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <title>新築でLAN配線をコスト削減｜CD管だけ業者に頼んでCat7ケーブルを自分で通した話 | usetool.net</title>
+  <meta name="description" content="Open House Developmentの新築戸建てで、CD管敷設だけ業者に依頼しCat7ケーブルを自分で通した実体験。費用・手順・失敗談・速度測定結果まで全部公開">
+  <link rel="canonical" href="https://usetool.net/blog/posts/cat7-lan-diy">
+
+  <!-- OGP -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="新築でLAN配線をコスト削減｜CD管だけ業者に頼んでCat7ケーブルを自分で通した話 | usetool.net">
+  <meta property="og:description" content="Open House Developmentの新築戸建てで、CD管敷設だけ業者に依頼しCat7ケーブルを自分で通した実体験。費用・手順・失敗談・速度測定結果まで全部公開">
+  <meta property="og:url" content="https://usetool.net/blog/posts/cat7-lan-diy">
+  <meta property="og:site_name" content="usetool.net">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="article:published_time" content="2026-03-21">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="新築でLAN配線をコスト削減｜CD管だけ業者に頼んでCat7ケーブルを自分で通した話 | usetool.net">
+  <meta name="twitter:description" content="Open House Developmentの新築戸建てで、CD管敷設だけ業者に依頼しCat7ケーブルを自分で通した実体験。費用・手順・失敗談・速度測定結果まで全部公開">
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
+      background: #f5f5f7;
+      color: #1d1d1f;
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    a {
+      color: #0071e3;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Site Nav ─────────────────────────── */
+    .site-nav {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .site-nav a {
+      font-size: 0.85rem;
+      color: #6e6e73;
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 20px;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .site-nav a:hover {
+      background: #e5e5ea;
+      color: #1d1d1f;
+    }
+
+    .site-nav a.active {
+      background: #0071e3;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* ── Breadcrumb ───────────────────────── */
+    .breadcrumb {
+      font-size: 0.8rem;
+      color: #8e8e93;
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .breadcrumb a {
+      color: #8e8e93;
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      color: #0071e3;
+    }
+
+    .breadcrumb-sep {
+      color: #c7c7cc;
+    }
+
+    /* ── Article Card ─────────────────────── */
+    .article-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 20px;
+    }
+
+    /* ── Article Header ───────────────────── */
+    .article-header {
+      margin-bottom: 24px;
+    }
+
+    .article-meta {
+      font-size: 0.8rem;
+      color: #8e8e93;
+      margin-bottom: 12px;
+    }
+
+    .article-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.35;
+      color: #1d1d1f;
+    }
+
+    /* ── Ad Unit ──────────────────────────── */
+    .ad-unit {
+      background: #f5f5f7;
+      border-radius: 10px;
+      padding: 8px;
+      margin: 24px 0;
+      text-align: center;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ad-label {
+      display: block;
+      font-size: 0.68rem;
+      color: #aeaeb2;
+      text-align: center;
+      margin-bottom: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    .ad-wrap {
+      width: 100%;
+    }
+
+    /* ── Article Body ─────────────────────── */
+    .article-body {
+      font-size: 0.95rem;
+      line-height: 1.85;
+      color: #3a3a3c;
+    }
+
+    .article-body h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1d1d1f;
+      margin: 36px 0 12px;
+      padding-left: 12px;
+      border-left: 3px solid #0071e3;
+    }
+
+    .article-body h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #1d1d1f;
+      margin: 24px 0 8px;
+    }
+
+    .article-body p {
+      margin-bottom: 16px;
+    }
+
+    .article-body ul,
+    .article-body ol {
+      margin: 12px 0 16px 1.5em;
+    }
+
+    .article-body li {
+      margin-bottom: 6px;
+    }
+
+    .article-body strong {
+      font-weight: 600;
+      color: #1d1d1f;
+    }
+
+    /* ── Article Image ────────────────────── */
+    .article-img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin: 16px 0 20px;
+      display: block;
+      background: #e5e5ea;
+      min-height: 180px;
+      object-fit: cover;
+    }
+
+    .img-caption {
+      font-size: 0.78rem;
+      color: #8e8e93;
+      text-align: center;
+      margin-top: -12px;
+      margin-bottom: 20px;
+    }
+
+    /* ── Table ────────────────────────────── */
+    .article-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 0.9rem;
+    }
+
+    .article-body th {
+      background: #f5f5f7;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      color: #3a3a3c;
+      border-bottom: 2px solid #e5e5ea;
+    }
+
+    .article-body td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #f0f0f0;
+      color: #3a3a3c;
+      vertical-align: top;
+    }
+
+    .article-body tr:last-child td {
+      border-bottom: none;
+    }
+
+    .article-body .total-row td {
+      font-weight: 700;
+      color: #1d1d1f;
+      background: #f0f6ff;
+    }
+
+    /* ── Step Box ─────────────────────────── */
+    .step-list {
+      list-style: none;
+      padding: 0;
+      margin: 16px 0 24px;
+    }
+
+    .step-list li {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      background: #0071e3;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .step-content {
+      flex: 1;
+      padding-top: 4px;
+    }
+
+    .step-content strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* ── Warning Box ──────────────────────── */
+    .warn-box {
+      background: #fff8e1;
+      border: 1px solid #f59e0b;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin: 20px 0;
+      font-size: 0.9rem;
+      color: #92400e;
+      line-height: 1.7;
+    }
+
+    .warn-box strong {
+      color: #78350f;
+    }
+
+    /* ── Info Box ─────────────────────────── */
+    .info-box {
+      background: #f0f6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin: 20px 0;
+      font-size: 0.9rem;
+      color: #1e40af;
+      line-height: 1.7;
+    }
+
+    /* ── Related Tools ────────────────────── */
+    .related-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px 32px;
+      margin-bottom: 20px;
+    }
+
+    .related-card h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1d1d1f;
+      margin-bottom: 16px;
+    }
+
+    .related-tools {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tool-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: #f5f5f7;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #1d1d1f;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: background 0.15s;
+    }
+
+    .tool-link:hover {
+      background: #e5e5ea;
+      text-decoration: none;
+    }
+
+    .tool-link-icon {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .tool-link-desc {
+      font-size: 0.78rem;
+      color: #6e6e73;
+      font-weight: 400;
+      margin-top: 2px;
+    }
+
+    /* ── Footer ───────────────────────────── */
+    footer {
+      text-align: center;
+      padding-top: 16px;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .footer-links a {
+      font-size: 0.8rem;
+      color: #8e8e93;
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      color: #0071e3;
+      text-decoration: none;
+    }
+
+    .footer-copy {
+      font-size: 0.75rem;
+      color: #aeaeb2;
+    }
+
+    /* ── Responsive ───────────────────────── */
+    @media (max-width: 640px) {
+      .article-card,
+      .related-card {
+        padding: 24px 20px;
+      }
+
+      .article-title {
+        font-size: 1.25rem;
+      }
+
+      .article-body h2 {
+        font-size: 1.1rem;
+      }
+
+      .article-body table {
+        font-size: 0.82rem;
+      }
+
+      .article-body th,
+      .article-body td {
+        padding: 8px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- サイトナビゲーション -->
+    <nav class="site-nav">
+      <a href="/">画像・PDF圧縮</a>
+      <a href="/webp/">WebP変換</a>
+      <a href="/qr/">QRコード生成</a>
+      <a href="/blog/" class="active">ブログ</a>
+      <a href="/contact.html">お問い合わせ</a>
+    </nav>
+
+    <!-- パンくずリスト -->
+    <nav class="breadcrumb" aria-label="パンくずリスト">
+      <a href="/">ホーム</a>
+      <span class="breadcrumb-sep">›</span>
+      <a href="/blog/">ブログ</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>新築でLAN配線をコスト削減</span>
+    </nav>
+
+    <!-- 記事カード -->
+    <article class="article-card">
+
+      <!-- 記事ヘッダー -->
+      <header class="article-header">
+        <p class="article-meta">
+          <time datetime="2026-03-21">2026年3月21日</time>
+        </p>
+        <h1 class="article-title">新築でLAN配線をコスト削減｜CD管だけ業者に頼んでCat7ケーブルを自分で通した話</h1>
+      </header>
+
+      <!-- 広告：記事上部 -->
+      <div class="ad-wrap">
+        <span class="ad-label">広告</span>
+        <div class="ad-unit">
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-7073636277654421"
+               data-ad-slot="XXXXXXXXXX"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+      </div>
+
+      <!-- 記事本文（前半） -->
+      <div class="article-body">
+
+        <h2>はじめに：新築でLAN配線は絶対に考えるべき</h2>
+        <p>新築戸建てを購入するとき、間取りや外観に目が行きがちで、LAN配線は後回しにしてしまいがちだ。しかし、家を建てた後にLAN配線を追加するには壁に穴を開ける大規模な工事が必要になり、費用も時間も大幅にかかってしまう。新築のタイミングこそが最もコストを抑えてLAN配線を整備できる絶好のチャンスだ。</p>
+        <p>私はOpen House Developmentの新築戸建てを購入した際、設計・間取り決定のタイミングでオプションとして<strong>CD管の敷設だけ</strong>を業者に依頼した。ケーブルを通す作業は自分でやることで、コストを大幅に削減。この記事では費用・手順・失敗談・そして4ヶ月使い続けた結果まで全部公開する。</p>
+
+        <img src="images/cat7-lan-001.jpg" alt="2階マルチメディアボックス（MB）全体の様子" class="article-img">
+        <p class="img-caption">2階のマルチメディアボックス。ここからゲーム部屋へCD管を通している</p>
+
+        <h2>オープンハウスにてCD管だけ依頼した経緯</h2>
+        <p>オープンハウスの標準仕様では、<strong>1階リビングの壁まではCat6ケーブルで配線済み</strong>（最大1Gbps対応）だった。しかし2階への有線LAN配線はオプション扱い。ゲーム部屋を2階に設けたかった私には、2階への高速有線接続が必須だった。</p>
+        <p>業者にケーブル配線まで全部依頼する選択肢もあったが、将来的により高規格なケーブルに引き直せるよう、<strong>CD管（配管）だけ先に通しておいてもらう</strong>という方法を選んだ。CD管さえあれば、ケーブルはいつでも自分で引き直せる。費用は以下の通り。</p>
+
+        <table>
+          <thead>
+            <tr><th>項目</th><th>費用</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>CD管敷設（2階MBから2階ゲーム部屋・1本分）</td><td>約35,000円</td></tr>
+            <tr><td>1階リビングへの配線（標準仕様・Cat6）</td><td>無料（標準込み）</td></tr>
+          </tbody>
+        </table>
+
+        <div class="info-box">
+          💡 <strong>CD管とは？</strong><br>
+          Combined Duct（コンビネーションダクト）の略。建築工事の段階で壁・床・天井の中に通しておく樹脂製の空配管。後からケーブルを通すための「道」として使う。新築時にしか安く設置できないため、後悔する前に必ず検討したい。
+        </div>
+
+        <h2>購入した材料（合計5,951円）</h2>
+        <p>すべてAmazonで購入。CD管が通ってさえいれば、必要な材料はケーブル・コネクタ・テスターの3点だけだ。</p>
+
+        <table>
+          <thead>
+            <tr><th>商品名</th><th>価格</th><th>購入先</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Cat7 LANケーブル 10M（超高速10Gbps/600MHz、3重シールド）</td>
+              <td>¥2,480</td>
+              <td>Amazon</td>
+            </tr>
+            <tr>
+              <td>UGREEN RJ45コネクタ Cat7 4個入（圧着不要、シールド付き）</td>
+              <td>¥1,280</td>
+              <td>Amazon</td>
+            </tr>
+            <tr>
+              <td>サンワサプライ LANテスター LAN-TST6</td>
+              <td>¥2,191</td>
+              <td>Amazon</td>
+            </tr>
+            <tr class="total-row">
+              <td><strong>合計</strong></td>
+              <td><strong>¥5,951</strong></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <img src="images/cat7-lan-002.jpg" alt="購入したCat7ケーブル・コネクタ・LANテスターの一式" class="article-img">
+        <p class="img-caption">左からLANテスター、Cat7ケーブル、UGREENのRJ45コネクタ</p>
+
+        <h2>施工手順：ステップごとに解説</h2>
+        <p>CD管には業者があらかじめ<strong>牽引用の針金</strong>を通しておいてくれていた。これがあるおかげで、ケーブルを引き通す作業が格段にやりやすくなる。</p>
+
+        <ol class="step-list">
+          <li>
+            <span class="step-num">1</span>
+            <div class="step-content">
+              <strong>CD管と針金の確認</strong>
+              マルチメディアボックスを開けて、CD管の入口と針金が出ているか確認。針金は銀色の細いワイヤーで、引っ張れる状態になっている。ゲーム部屋側のCD管出口も確認しておく。
+            </div>
+          </li>
+          <li>
+            <span class="step-num">2</span>
+            <div class="step-content">
+              <strong>ケーブル片側のコネクタを切断</strong>
+              市販のCat7ケーブルはコネクタ付きで販売されているが、コネクタの頭が太くてCD管に入らない。ハサミでコネクタ根本から切断し、ケーブル端を露出させる。
+            </div>
+          </li>
+          <li>
+            <span class="step-num">3</span>
+            <div class="step-content">
+              <strong>ケーブルを針金にテープで固定</strong>
+              切断したケーブルの端を、CD管内の針金の先端にビニールテープでしっかり固定する。テープは段差ができないよう螺旋状に巻くとCD管内でひっかかりにくくなる。
+            </div>
+          </li>
+          <li>
+            <span class="step-num">4</span>
+            <div class="step-content">
+              <strong>ゲーム部屋側から針金を引き抜く</strong>
+              ゲーム部屋側のCD管出口から針金を引っ張ってケーブルを通す。Cat7ケーブルはシールドで太いため、ある程度力が必要。一人が押しながら、もう一人が引っ張ると楽だが、一人でも可能。
+            </div>
+          </li>
+          <li>
+            <span class="step-num">5</span>
+            <div class="step-content">
+              <strong>コネクタの取り付け</strong>
+              両端のケーブルにRJ45コネクタを取り付ける。UGREENの圧着不要コネクタは、8本の線を規格（T568B）の順番に整列させてコネクタに差し込むだけ。ここが最も時間と根気のいる作業。
+            </div>
+          </li>
+          <li>
+            <span class="step-num">6</span>
+            <div class="step-content">
+              <strong>LANテスターで導通確認</strong>
+              両端のコネクタにテスターをつないで全8ピンの導通を確認。1〜8の番号が順番に点灯すれば成功。
+            </div>
+          </li>
+        </ol>
+
+        <img src="images/cat7-lan-003.jpg" alt="CD管の入口と牽引用の針金が見えている様子" class="article-img">
+        <p class="img-caption">CD管の出口から出ている針金。これにケーブルをテープで固定して引っ張る</p>
+
+        <img src="images/cat7-lan-004.jpg" alt="ケーブルと針金をビニールテープで固定している様子" class="article-img">
+        <p class="img-caption">ケーブル端を針金にテープで巻き付ける。段差が出ないよう丁寧に</p>
+
+      </div><!-- /article-body 前半 -->
+
+      <!-- 広告：記事中部 -->
+      <div class="ad-wrap">
+        <span class="ad-label">広告</span>
+        <div class="ad-unit">
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-7073636277654421"
+               data-ad-slot="XXXXXXXXXX"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+      </div>
+
+      <!-- 記事本文（後半） -->
+      <div class="article-body">
+
+        <h2>失敗談・後悔ポイント</h2>
+        <p>正直に言う。うまくいった部分も多かったが、やり直したいと思った点もいくつかある。</p>
+
+        <div class="warn-box">
+          ⚠️ <strong>ケーブル長が10Mでギリギリすぎた（最大の後悔）</strong><br>
+          設計図を見ると余裕があるように見えたが、実際にCD管を通すとケーブルは曲がった経路を通るため実測より長く必要になる。10Mでなんとか届いたが本当にギリギリで、コネクタ取り付けのやり直し余裕もほぼゼロ。<strong>15M以上を買うべきだった。</strong>いずれ引き直す予定。
+        </div>
+
+        <div class="warn-box">
+          ⚠️ <strong>Cat7じゃなくてCat6eで十分だった</strong><br>
+          将来を見越してCat8にしたかったが、AmazonではCat8ケーブルが高額なうえコネクタが存在しなかった。Cat7を選んだが、後から調べると<strong>Cat7はCat6e相当の性能</strong>で、実際に市場での普及率も低い規格。コネクタの種類が豊富で品質の良いCat6eの高グレード品にした方が良かった。
+        </div>
+
+        <div class="warn-box">
+          ⚠️ <strong>専用カッターを用意すればよかった</strong><br>
+          Cat7ケーブルはシールドが多重で外皮が厚く、ハサミで切るのが非常に大変だった。内部の8本の線を傷つけずに外皮だけ剥くのに苦労し、何度もやり直した。LANケーブル専用のストリッパー（剥線工具）を用意していれば作業時間を大幅に短縮できた。
+        </div>
+
+        <div class="warn-box">
+          ⚠️ <strong>コネクタの長さ調整に時間がかかった</strong><br>
+          8本の線をT568B規格の順番に並べ、コネクタに合った長さに揃えるのが難しい。3〜4回切り直してようやく綺麗に揃えられた。圧着不要コネクタとはいえ、線の長さと並びには神経を使う。
+        </div>
+
+        <img src="images/cat7-lan-005.jpg" alt="RJ45コネクタに8本の線を整列させている様子" class="article-img">
+        <p class="img-caption">8本の線をT568B規格の順番に整列させてコネクタへ。ここが一番の難所</p>
+
+        <h2>業者に依頼した場合の費用相場</h2>
+        <p>「自分でやらず業者に全部頼んだらいくらかかったのか？」を調べた結果をまとめる。</p>
+
+        <table>
+          <thead>
+            <tr><th>依頼パターン</th><th>費用相場</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CD管あり（通線のみ）・1箇所</td>
+              <td>10,000〜40,000円</td>
+            </tr>
+            <tr>
+              <td>CD管あり・Cat6規格</td>
+              <td>8,000円〜/箇所</td>
+            </tr>
+            <tr>
+              <td>CD管あり・Cat6A規格</td>
+              <td>13,200円〜/箇所</td>
+            </tr>
+            <tr>
+              <td>後付け工事（CD管なし、壁内配線）</td>
+              <td>40,000〜95,000円</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>参考：<a href="https://www.ienakama.com/lan/price/" target="_blank" rel="noopener noreferrer">家仲間コム「LAN配線工事の価格・費用相場」</a> / <a href="https://office110.jp/lan/knowledge/cost/market-price/" target="_blank" rel="noopener noreferrer">OFFICE110「LAN配線工事の費用相場」</a></p>
+
+        <p>CD管が敷設済みの状態でケーブル通線を業者に依頼すると、<strong>最低でも1〜4万円程度かかる</strong>。さらにCD管の敷設費用3.5万円と合計すると、フルで業者に頼んだ場合は<strong>5〜7.5万円前後</strong>になる計算だ。</p>
+
+        <h2>結果：LANテスター一発成功、速度も大満足</h2>
+
+        <img src="images/cat7-lan-006.jpg" alt="サンワサプライLANテスターで8本全導通を確認している様子" class="article-img">
+        <p class="img-caption">LANテスターのランプが1〜8まで順番に点灯。8本全て導通確認</p>
+
+        <p>コネクタ取り付け後、サンワサプライのLANテスターで両端を接続して計測した結果、<strong>8本全ての線で導通確認、一発成功</strong>。失敗を覚悟していたので正直驚いた。</p>
+        <p>その後au光が開通した際、工事業者の方にケーブルを見せたところ「あ、自分で通されたんですね。すごいですね」と言われた。ちょっと嬉しかった。</p>
+
+        <img src="images/cat7-lan-007.jpg" alt="速度測定結果：上り下りともに3.7Gbps" class="article-img">
+        <p class="img-caption">現在は5G契約で運用中。上り・下りともに3.7Gbpsを計測</p>
+
+        <p>施工から4ヶ月以上が経過したが、<strong>断線・接続不良はゼロ</strong>。現在は5G契約で様子を見ており、上り・下りともに<strong>3.7Gbps</strong>を計測している。10G環境の整備も完了済みで、将来的にはさらなる高速環境への移行も視野に入れている。</p>
+
+        <h2>まとめ：コスト比較と総評</h2>
+
+        <p>前提：<strong>CD管（空配管）設置済みの状態</strong>からの比較。</p>
+
+        <table>
+          <thead>
+            <tr><th>項目</th><th>自分でDIY（今回）</th><th>業者に依頼</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ケーブル・材料費</td>
+              <td>¥5,951</td>
+              <td>込み</td>
+            </tr>
+            <tr>
+              <td>作業費</td>
+              <td>¥0</td>
+              <td>約3〜5万円</td>
+            </tr>
+            <tr class="total-row">
+              <td><strong>合計</strong></td>
+              <td><strong>¥5,951</strong></td>
+              <td><strong>約3〜5万円</strong></td>
+            </tr>
+            <tr>
+              <td>節約額</td>
+              <td>―</td>
+              <td>約2.4〜4万円お得</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="info-box">
+          📝 <strong>注記</strong><br>
+          CD管（空配管）の設置費用はOpen House Developmentのオプション費用として別途かかります（筆者の場合は約3.5万円）。CD管設置まで業者に依頼する場合はさらに追加費用が発生します。
+        </div>
+
+        <p>作業時間は2〜3時間程度で、電気系の知識がなくてもネットの情報を参考にすれば十分対応できる難易度だ。</p>
+        <p>新築を検討している人には、<strong>「CD管だけ業者に頼んでケーブルは自分で通す」</strong>という方法を強くおすすめしたい。将来のケーブル引き直しも簡単にできるし、コスパも抜群だ。ただし、ケーブル長は設計図より必ず長めに買うこと。それだけは本当に後悔しているので。</p>
+
+      </div><!-- /article-body 後半 -->
+
+      <!-- 広告：記事下部 -->
+      <div class="ad-wrap">
+        <span class="ad-label">広告</span>
+        <div class="ad-unit">
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-7073636277654421"
+               data-ad-slot="XXXXXXXXXX"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+      </div>
+
+    </article>
+
+    <!-- 関連ツール -->
+    <aside class="related-card">
+      <h2>関連ツール</h2>
+      <div class="related-tools">
+        <a href="/" class="tool-link">
+          <span class="tool-link-icon">🗜️</span>
+          <div>
+            <div>画像・PDF圧縮ツール</div>
+            <div class="tool-link-desc">JPEG・PNG・PDFをブラウザ上で圧縮。アップロード不要</div>
+          </div>
+        </a>
+        <a href="/webp/" class="tool-link">
+          <span class="tool-link-icon">🖼️</span>
+          <div>
+            <div>WebP変換ツール</div>
+            <div class="tool-link-desc">画像をWebP形式に一括変換。品質調整スライダー付き</div>
+          </div>
+        </a>
+      </div>
+    </aside>
+
+    <!-- フッター -->
+    <footer>
+      <nav class="footer-links">
+        <a href="/">ホーム</a>
+        <a href="/blog/">ブログ</a>
+        <a href="/privacy.html">プライバシーポリシー</a>
+        <a href="/contact.html">お問い合わせ</a>
+      </nav>
+      <p class="footer-copy">&copy; 2024 usetool.net</p>
+    </footer>
+
+  </div>
+</body>
+</html>
