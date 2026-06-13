@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SNS運用ダッシュボード</title>
+<style>
+:root{
+  --bg:#0f1318; --panel:#171c23; --panel2:#1e242d; --line:#2a313c;
+  --txt:#d8dee7; --sub:#8a94a3; --accent:#43c6b8; --accent2:#ffb454;
+  --red:#ff6b6b; --green:#5dd39e; --yellow:#ffd166;
+  --radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--txt);font-family:"Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic UI",Meiryo,sans-serif;font-size:14px;line-height:1.6;padding-bottom:70px}
+.mono{font-family:"SF Mono",Consolas,"Cascadia Code",Menlo,monospace}
+header{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 14px;display:flex;align-items:center;gap:10px}
+header h1{font-size:15px;font-weight:600;letter-spacing:.05em}
+header .sync{margin-left:auto;font-size:11px;color:var(--sub);display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--sub)}
+.dot.ok{background:var(--green)} .dot.ng{background:var(--red)} .dot.busy{background:var(--yellow);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.3}}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:50;display:flex;background:var(--panel);border-top:1px solid var(--line)}
+nav button{flex:1;background:none;border:none;color:var(--sub);padding:9px 0 7px;font-size:11px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button .ic{font-size:17px;line-height:1}
+nav button.on{color:var(--accent)}
+main{max-width:860px;margin:0 auto;padding:14px}
+.tab{display:none}.tab.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:14px}
+.card h2{font-size:13px;color:var(--sub);font-weight:600;letter-spacing:.08em;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.card h2 .badge{background:var(--accent);color:#0f1318;border-radius:10px;padding:0 8px;font-size:11px;font-weight:700}
+button.btn{background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer}
+button.btn:active{transform:scale(.97)}
+button.btn.pri{background:var(--accent);border-color:var(--accent);color:#0f1318;font-weight:700}
+button.btn.warn{border-color:var(--red);color:var(--red)}
+button.btn.sm{padding:4px 10px;font-size:12px}
+input[type=text],input[type=url],input[type=number],input[type=date],textarea,select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:8px 10px;font-size:14px}
+textarea{resize:vertical;min-height:70px}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.muted{color:var(--sub);font-size:12px}
+/* ---- 今日タブ ---- */
+.slots{display:flex;gap:8px;margin-bottom:14px}
+.slot{flex:1;text-align:center;padding:8px 4px;border-radius:8px;background:var(--panel);border:1px solid var(--line);font-size:12px;color:var(--sub)}
+.slot.now{border-color:var(--accent);color:var(--accent);font-weight:700;box-shadow:0 0 0 1px var(--accent) inset}
+.slot .t{display:block;font-size:10px;opacity:.7}
+.chk{display:flex;align-items:flex-start;gap:10px;padding:9px 6px;border-bottom:1px solid var(--line);cursor:pointer}
+.chk:last-child{border-bottom:none}
+.chk input{width:20px;height:20px;accent-color:var(--accent);flex-shrink:0;margin-top:2px}
+.chk.done .lbl{color:var(--sub);text-decoration:line-through}
+.chk .est{margin-left:auto;font-size:11px;color:var(--sub);flex-shrink:0}
+.streak{display:flex;gap:18px;justify-content:center;padding:6px 0}
+.streak div{text-align:center}
+.streak b{display:block;font-size:24px;color:var(--accent)}
+.streak span{font-size:11px;color:var(--sub)}
+.repctr{display:flex;align-items:center;justify-content:center;gap:14px;padding:8px 0}
+.repctr b{font-size:34px;color:var(--accent2)}
+.repctr small{color:var(--sub)}
+.repctr button{width:52px;height:52px;border-radius:50%;font-size:22px}
+.golden{font-size:12px;color:var(--sub);text-align:center;margin-top:4px}
+/* ---- 巡回 ---- */
+.sitecat{margin-bottom:6px}
+.sitecat h3{font-size:12px;color:var(--accent2);margin:10px 0 4px;letter-spacing:.05em}
+.site{display:flex;align-items:center;gap:10px;padding:7px 4px;border-bottom:1px solid var(--line)}
+.site input{width:18px;height:18px;accent-color:var(--green);flex-shrink:0}
+.site a{color:var(--txt);text-decoration:none;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.site a:active{color:var(--accent)}
+.site.v a{color:var(--sub)}
+.site .del{color:var(--sub);background:none;border:none;cursor:pointer;font-size:15px;padding:2px 6px}
+/* ---- リスト共通 ---- */
+.item{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px;margin-bottom:10px}
+.item .top{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.st{font-size:11px;border-radius:6px;padding:1px 8px;font-weight:600;flex-shrink:0}
+.st.new{background:#3a4a5e;color:#aecbeb}
+.st.drafted{background:#4a3f23;color:var(--accent2)}
+.st.posted{background:#1f3d33;color:var(--green)}
+.item .ttl{font-weight:600;flex:1;min-width:120px}
+.item .memo{font-size:13px;color:var(--sub);white-space:pre-wrap;margin-bottom:8px}
+.item a.url{font-size:12px;color:var(--accent);word-break:break-all;text-decoration:none}
+.item .ops{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.drafttext{white-space:pre-wrap;font-size:13px;background:var(--bg);border-radius:6px;padding:8px;margin:6px 0;border:1px solid var(--line)}
+.item.used{opacity:.5}
+/* ---- 実績 ---- */
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{border-bottom:1px solid var(--line);padding:6px 4px;text-align:right;white-space:nowrap}
+th{color:var(--sub);font-weight:600}
+td.l,th.l{text-align:left}
+td .posttxt{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.er-bad{color:var(--red);font-weight:700}.er-good{color:var(--green);font-weight:700}.er-mid{color:var(--yellow)}
+.chart{display:flex;align-items:flex-end;gap:3px;height:90px;padding:8px 2px 0}
+.chart .bar{flex:1;background:var(--accent);border-radius:3px 3px 0 0;min-height:2px;opacity:.85;position:relative}
+.chart .bar span{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--sub);display:none}
+.chart .bar:active span{display:block}
+.chartlbl{display:flex;gap:3px;font-size:9px;color:var(--sub)}
+.chartlbl div{flex:1;text-align:center}
+.analysis{border-left:3px solid var(--accent);padding:8px 10px;background:var(--panel2);border-radius:0 8px 8px 0;margin-bottom:10px}
+.analysis .d{font-size:11px;color:var(--sub);margin-bottom:4px}
+.analysis .b{white-space:pre-wrap;font-size:13px}
+/* ---- モーダル風入力エリア ---- */
+details summary{cursor:pointer;color:var(--accent);font-size:13px;padding:4px 0;user-select:none}
+details[open] summary{margin-bottom:8px}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.formgrid .full{grid-column:1/-1}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--accent);color:#0f1318;font-weight:700;padding:9px 20px;border-radius:20px;z-index:99;opacity:0;transition:opacity .25s;pointer-events:none;font-size:13px;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+.filterbar{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.filterbar button{font-size:12px;padding:4px 12px;border-radius:14px;background:var(--panel2);border:1px solid var(--line);color:var(--sub);cursor:pointer}
+.filterbar button.on{border-color:var(--accent);color:var(--accent)}
+@media(min-width:768px){
+  body{padding-bottom:14px}
+  nav{position:sticky;top:49px;bottom:auto;border-top:none;border-bottom:1px solid var(--line);justify-content:center}
+  nav button{flex:0 0 auto;flex-direction:row;padding:10px 22px;font-size:13px;gap:7px}
+  nav button.on{border-bottom:2px solid var(--accent)}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>SNS運用ダッシュボード</h1>
+  <div class="sync"><div class="dot" id="syncDot"></div><span id="syncMsg">未同期</span></div>
+</header>
+<nav id="nav">
+  <button data-t="today" class="on"><span class="ic">☀</span>今日</button>
+  <button data-t="sites"><span class="ic">🌐</span>巡回</button>
+  <button data-t="ideas"><span class="ic">💡</span>ネタ</button>
+  <button data-t="drafts"><span class="ic">📝</span>投稿案</button>
+  <button data-t="stats"><span class="ic">📈</span>実績</button>
+  <button data-t="conf"><span class="ic">⚙</span>設定</button>
+</nav>
+<main>
+
+<!-- ============ 今日 ============ -->
+<section class="tab on" id="tab-today">
+  <div class="slots" id="slots">
+    <div class="slot" data-s="m">朝<span class="t">5:30-7:00 投稿7時台</span></div>
+    <div class="slot" data-s="d">昼<span class="t">12:00台 リプ+2本目</span></div>
+    <div class="slot" data-s="n">夜<span class="t">21-22時 投稿+返信</span></div>
+  </div>
+
+  <div class="card">
+    <h2>ルーティン <span class="badge" id="routineBadge">0/0</span></h2>
+    <div id="routineList"></div>
+    <div class="streak">
+      <div><b id="streakNum">0</b><span>連続達成日数</span></div>
+      <div><b id="todayMin" class="mono">0</b><span>消化時間(分)</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>リプ営業カウンター</h2>
+    <div class="repctr">
+      <button class="btn" id="repMinus">−</button>
+      <div><b class="mono" id="repNum">0</b><small> / 5件</small></div>
+      <button class="btn pri" id="repPlus">＋</button>
+    </div>
+    <div class="golden">伸びてる投稿に「感想+質問」型のリプを。会話の往復が最大評価</div>
+  </div>
+
+  <div class="card">
+    <h2>クイックネタ登録</h2>
+    <div class="row" style="flex-direction:column;align-items:stretch;gap:8px">
+      <input type="url" id="qUrl" placeholder="記事URLを貼り付け">
+      <input type="text" id="qMemo" placeholder="一言メモ(任意・詳細は夜PCで)">
+      <button class="btn pri" id="qAdd">ネタに登録</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>未使用の投稿案 <span class="badge" id="unusedBadge">0</span></h2>
+    <div id="quickDrafts"></div>
+    <div class="muted" id="quickDraftsEmpty">未使用の投稿案がありません。ネタタブからClaudeに依頼して補充しましょう。</div>
+  </div>
+</section>
+
+<!-- ============ 巡回 ============ -->
+<section class="tab" id="tab-sites">
+  <div class="card">
+    <h2>巡回サイト <span class="badge" id="siteBadge">0/0</span></h2>
+    <div class="muted" style="margin-bottom:8px">チェックは毎日自動リセット。リンクは新しいタブで開きます。</div>
+    <div id="siteList"></div>
+    <details style="margin-top:10px">
+      <summary>＋ サイトを追加</summary>
+      <div class="formgrid">
+        <input type="text" id="sName" placeholder="サイト名">
+        <select id="sCat">
+          <option value="国内PC">国内PC</option>
+          <option value="国内AI/テック">国内AI/テック</option>
+          <option value="海外">海外</option>
+          <option value="コミュニティ">コミュニティ</option>
+          <option value="公式">公式</option>
+        </select>
+        <input type="url" id="sUrl" placeholder="https://..." class="full">
+        <button class="btn pri full" id="sAdd">追加</button>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ============ ネタ ============ -->
+<section class="tab" id="tab-ideas">
+  <div class="card">
+    <h2>ネタを追加</h2>
+    <div class="formgrid">
+      <input type="url" id="iUrl" placeholder="記事URL" class="full">
+      <input type="text" id="iTitle" placeholder="タイトル(任意)" class="full">
+      <textarea id="iMemo" placeholder="メモ:何に引っかかったか、自分の体験との接点など" class="full"></textarea>
+      <button class="btn pri full" id="iAdd">登録</button>
+    </div>
+  </div>
+  <div class="filterbar" id="ideaFilter">
+    <button data-f="all" class="on">すべて</button>
+    <button data-f="new">未処理</button>
+    <button data-f="drafted">投稿案あり</button>
+    <button data-f="posted">投稿済み</button>
+  </div>
+  <div id="ideaList"></div>
+
+  <div class="card">
+    <h2>常設ネタ(体験談ストック) <span class="badge" id="evBadge">0</span></h2>
+    <div class="muted" style="margin-bottom:8px">時事が薄い日の穴埋め用。使ったらチェックで消し込み。</div>
+    <div id="evList"></div>
+    <div class="row" style="margin-top:8px">
+      <input type="text" id="evNew" placeholder="例:NAS導入で後悔したこと" style="flex:1">
+      <button class="btn pri" id="evAdd">追加</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 投稿案 ============ -->
+<section class="tab" id="tab-drafts">
+  <div class="card">
+    <h2>投稿案を追加(Claudeの回答を貼り付け)</h2>
+    <div class="formgrid">
+      <select id="dIdea" class="full"><option value="">紐づけるネタ(任意)</option></select>
+      <textarea id="dText" placeholder="投稿案の本文を1案ずつ貼り付け" class="full" style="min-height:90px"></textarea>
+      <button class="btn pri full" id="dAdd">保存</button>
+    </div>
+  </div>
+  <div class="filterbar" id="draftFilter">
+    <button data-f="unused" class="on">未使用</button>
+    <button data-f="used">使用済み</button>
+    <button data-f="all">すべて</button>
+  </div>
+  <div id="draftList"></div>
+</section>
+
+<!-- ============ 実績 ============ -->
+<section class="tab" id="tab-stats">
+  <div class="card">
+    <h2>投稿実績を記録</h2>
+    <div class="formgrid">
+      <input type="date" id="rDate">
+      <input type="text" id="rText" placeholder="投稿の冒頭(識別用)">
+      <input type="number" id="rImp" placeholder="インプ数" inputmode="numeric">
+      <input type="number" id="rLike" placeholder="いいね" inputmode="numeric">
+      <input type="number" id="rRep" placeholder="リプ" inputmode="numeric">
+      <input type="number" id="rRt" placeholder="リポスト" inputmode="numeric">
+      <button class="btn pri full" id="rAdd">記録</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>直近14日のインプレッション</h2>
+    <div class="chart" id="chart"></div>
+    <div class="chartlbl" id="chartLbl"></div>
+  </div>
+
+  <div class="card">
+    <h2>投稿一覧</h2>
+    <div class="muted" style="margin-bottom:6px">エンゲ率 = (いいね+リプ+RP)÷インプ。<span class="er-bad">0.3%未満=内容の問題</span> / <span class="er-good">1%超で伸びない=配信量の問題</span></div>
+    <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th class="l">日付</th><th class="l">投稿</th><th>インプ</th><th>♥</th><th>リプ</th><th>RP</th><th>エンゲ率</th><th></th></tr></thead>
+      <tbody id="recBody"></tbody>
+    </table>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn pri" id="weeklyPrompt">📋 週次分析プロンプトを生成してコピー</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Claudeの分析結果ログ</h2>
+    <textarea id="aText" placeholder="Claudeの分析結果を貼り付けて蓄積(=自分専用の勝ちパターン集)"></textarea>
+    <div class="row" style="margin-top:8px"><button class="btn pri" id="aAdd">保存</button></div>
+    <div id="aList" style="margin-top:12px"></div>
+  </div>
+</section>
+
+<!-- ============ 設定 ============ -->
+<section class="tab" id="tab-conf">
+  <div class="card">
+    <h2>GAS同期</h2>
+    <input type="url" id="gasUrl" placeholder="GASウェブアプリURL(https://script.google.com/macros/s/.../exec)">
+    <div class="row" style="margin-top:10px">
+      <button class="btn pri" id="gasSave">URLを保存</button>
+      <button class="btn" id="cloudLoad">☁ 読み込み</button>
+      <button class="btn" id="cloudSave">☁ 今すぐ保存</button>
+    </div>
+    <div class="muted" style="margin-top:8px">変更は30秒後に自動保存されます。起動時はクラウドから自動読み込み。最終同期: <span id="lastSync" class="mono">-</span></div>
+  </div>
+  <div class="card">
+    <h2>バックアップ</h2>
+    <div class="row">
+      <button class="btn" id="expJson">JSONエクスポート</button>
+      <button class="btn" id="impJson">JSONインポート</button>
+      <input type="file" id="impFile" accept=".json" style="display:none">
+    </div>
+    <div class="muted" style="margin-top:8px">各端末のlocalStorageにも直近3世代を自動バックアップしています。</div>
+  </div>
+  <div class="card">
+    <h2>定型プロンプト</h2>
+    <div class="row" style="flex-direction:column;align-items:stretch;gap:8px">
+      <button class="btn" data-pt="summary">📋 記事の要約依頼(コピー後、記事URLを添えて送信)</button>
+      <button class="btn" data-pt="reply">📋 リプ返信案の依頼</button>
+      <button class="btn" data-pt="rewrite">📋 推敲依頼(短く自然に)</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>データ</h2>
+    <button class="btn warn" id="resetAll">全データ初期化</button>
+  </div>
+</section>
+
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* ===================== 状態 ===================== */
+const ROUTINE_DEF = [
+  {id:"m1", slot:"m", lbl:"情報収集(トレンド+巡回サイト)", est:10},
+  {id:"m2", slot:"m", lbl:"Claudeで投稿案を作成・仕上げ", est:10},
+  {id:"m3", slot:"m", lbl:"1本目を7時台に予約投稿", est:5},
+  {id:"d1", slot:"d", lbl:"リプ営業 5件(カウンターで管理)", est:10},
+  {id:"d2", slot:"d", lbl:"2本目を投稿(ストックからコピー)", est:5},
+  {id:"n1", slot:"n", lbl:"3本目を21時台に投稿", est:5},
+  {id:"n2", slot:"n", lbl:"自分の投稿のリプに全返信(15分以内)", est:10},
+  {id:"n3", slot:"n", lbl:"アナリティクス確認+実績記録", est:5},
+];
+const DEFAULT_SITES = [
+  ["国内PC","PC Watch","https://pc.watch.impress.co.jp/"],
+  ["国内PC","AKIBA PC Hotline!","https://akiba-pc.watch.impress.co.jp/"],
+  ["国内PC","GIGAZINE","https://gigazine.net/"],
+  ["国内PC","ITmedia PC USER","https://www.itmedia.co.jp/pcuser/"],
+  ["国内PC","エルミタージュ秋葉原","https://www.gdm.or.jp/"],
+  ["国内AI/テック","ITmedia AI+","https://www.itmedia.co.jp/aiplus/"],
+  ["国内AI/テック","ASCII.jp","https://ascii.jp/"],
+  ["国内AI/テック","Publickey","https://www.publickey1.jp/"],
+  ["海外","Tom's Hardware","https://www.tomshardware.com/"],
+  ["海外","TechPowerUp","https://www.techpowerup.com/"],
+  ["海外","VideoCardz","https://videocardz.com/"],
+  ["海外","The Verge","https://www.theverge.com/"],
+  ["海外","Hacker News","https://news.ycombinator.com/"],
+  ["コミュニティ","r/LocalLLaMA","https://www.reddit.com/r/LocalLLaMA/"],
+  ["コミュニティ","r/homelab","https://www.reddit.com/r/homelab/"],
+  ["国内AI/テック","日経クロステック","https://xtech.nikkei.com/"],
+  ["国内AI/テック","Lifehacker Japan","https://www.lifehacker.jp/"],
+  ["海外","Product Hunt","https://www.producthunt.com/"],
+  ["コミュニティ","r/selfhosted","https://www.reddit.com/r/selfhosted/"],
+  ["公式","Anthropic News","https://www.anthropic.com/news"],
+  ["公式","OpenAI News","https://openai.com/news/"],
+];
+function defaultState(){
+  return {
+    routine:{date:"", checks:{}, rep:0, streak:0, lastDone:""},
+    sites: DEFAULT_SITES.map((s,i)=>({id:"s"+i, cat:s[0], name:s[1], url:s[2], visited:""})),
+    ideas:[], drafts:[], records:[], analyses:[],
+    evergreen:[
+      {id:"e1", text:"NAS導入で後悔したこと/良かったこと", used:false},
+      {id:"e2", text:"新築時にCat6配線を入れるべき理由(実体験)", used:false},
+      {id:"e3", text:"10GbE環境を組んで分かった現実", used:false},
+      {id:"e4", text:"ExcelのVBAをAIに書かせたら工数がどれだけ減ったか", used:false},
+      {id:"e5", text:"RTX 4080でローカルLLMを動かした結果", used:false},
+    ],
+    savedAt:0
+  };
+}
+let S = defaultState();
+let dirty = false, saveTimer = null;
+const $ = id => document.getElementById(id);
+const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const todayStr = () => { const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.remove("show"),1800); }
+function esc(s){ return (s||"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
+async function copyText(txt){
+  try{ await navigator.clipboard.writeText(txt); toast("コピーしました"); }
+  catch(e){
+    const ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta);
+    ta.select(); document.execCommand("copy"); ta.remove(); toast("コピーしました");
+  }
+}
+
+/* ===================== 保存・同期 ===================== */
+const LS_KEY="snsDash_v1", LS_BAK="snsDash_v1_bak", LS_GAS="snsDash_gasUrl";
+function markDirty(){
+  dirty=true; clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{ persist(); if(localStorage.getItem(LS_GAS)) cloudSave(true); }, 30000);
+  persist();
+}
+function persist(){
+  S.savedAt = Date.now();
+  try{
+    localStorage.setItem(LS_KEY, JSON.stringify(S));
+    // 3世代バックアップ
+    let bak=[]; try{ bak=JSON.parse(localStorage.getItem(LS_BAK)||"[]"); }catch(e){}
+    bak.unshift({at:S.savedAt, data:JSON.stringify(S)});
+    localStorage.setItem(LS_BAK, JSON.stringify(bak.slice(0,3)));
+  }catch(e){ console.error(e); }
+}
+function setSync(state,msg){
+  const d=$("syncDot"); d.className="dot "+(state||"");
+  $("syncMsg").textContent=msg;
+  if(S.savedAt) $("lastSync").textContent=new Date(S.savedAt).toLocaleString("ja-JP");
+}
+async function cloudSave(auto){
+  const url=localStorage.getItem(LS_GAS); if(!url){ if(!auto) toast("GAS URLが未設定です"); return; }
+  setSync("busy","保存中...");
+  try{
+    S.savedAt=Date.now();
+    const res=await fetch(url,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"save",data:S})});
+    const j=await res.json();
+    if(j.ok){ dirty=false; persist(); setSync("ok","同期済み "+new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"})); if(!auto) toast("クラウドに保存しました"); }
+    else throw new Error(j.error||"save failed");
+  }catch(e){ console.error(e); setSync("ng","保存失敗"); if(!auto) toast("保存に失敗: "+e.message); }
+}
+async function cloudLoad(silent){
+  const url=localStorage.getItem(LS_GAS); if(!url){ if(!silent) toast("GAS URLが未設定です"); return; }
+  setSync("busy","読込中...");
+  try{
+    const res=await fetch(url,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"load"})});
+    const j=await res.json();
+    if(j.ok && j.data){
+      const cloud=j.data;
+      if(!S.savedAt || (cloud.savedAt||0) >= (S.savedAt||0)){
+        S = Object.assign(defaultState(), cloud);
+        toast(silent?"クラウドから読み込みました":"読み込み完了");
+      } else if(!silent){
+        if(confirm("この端末のデータの方が新しいようです。クラウドのデータで上書きしますか?")) S=Object.assign(defaultState(),cloud);
+      }
+      dailyReset(); renderAll(); persist();
+      setSync("ok","同期済み "+new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"}));
+    } else if(j.ok && !j.data){ setSync("ok","クラウドは空(初回)"); }
+    else throw new Error(j.error||"load failed");
+  }catch(e){ console.error(e); setSync("ng","読込失敗"); if(!silent) toast("読込に失敗: "+e.message); }
+}
+
+/* ===================== 日次リセット ===================== */
+function migrate(){
+  if((S.ver||1) < 2){
+    const add=[
+      ["国内AI/テック","日経クロステック","https://xtech.nikkei.com/"],
+      ["国内AI/テック","Lifehacker Japan","https://www.lifehacker.jp/"],
+      ["海外","Product Hunt","https://www.producthunt.com/"],
+      ["コミュニティ","r/selfhosted","https://www.reddit.com/r/selfhosted/"],
+    ];
+    add.forEach(([cat,name,url])=>{
+      if(!S.sites.some(s=>s.url===url)) S.sites.push({id:uid(), cat, name, url, visited:""});
+    });
+    S.ver=2;
+  }
+}
+function dailyReset(){
+  migrate();
+  const t=todayStr();
+  if(S.routine.date!==t){
+    // 前日が全達成ならstreak維持判定はチェック時に実施済み。日付替えのみ
+    S.routine.date=t; S.routine.checks={}; S.routine.rep=0;
+    S.sites.forEach(s=>{ if(s.visited!==t) s.visited=""; });
+  }
+}
+
+/* ===================== 今日タブ ===================== */
+function currentSlot(){ const h=new Date().getHours(); if(h<11) return "m"; if(h<17) return "d"; return "n"; }
+function renderToday(){
+  const cs=currentSlot();
+  document.querySelectorAll(".slot").forEach(el=>el.classList.toggle("now",el.dataset.s===cs));
+  const list=$("routineList"); list.innerHTML="";
+  const slotName={m:"朝",d:"昼",n:"夜"};
+  let done=0, min=0;
+  ROUTINE_DEF.forEach(r=>{
+    const c=!!S.routine.checks[r.id]; if(c){done++; min+=r.est;}
+    const div=document.createElement("label");
+    div.className="chk"+(c?" done":"");
+    div.innerHTML=`<input type="checkbox" ${c?"checked":""}><span class="lbl"><b style="color:var(--accent2);font-size:11px">[${slotName[r.slot]}]</b> ${esc(r.lbl)}</span><span class="est mono">${r.est}分</span>`;
+    div.querySelector("input").addEventListener("change",ev=>{
+      S.routine.checks[r.id]=ev.target.checked;
+      checkStreak(); markDirty(); renderToday();
+    });
+    list.appendChild(div);
+  });
+  $("routineBadge").textContent=done+"/"+ROUTINE_DEF.length;
+  $("todayMin").textContent=min;
+  $("streakNum").textContent=S.routine.streak||0;
+  $("repNum").textContent=S.routine.rep||0;
+  renderQuickDrafts();
+}
+function checkStreak(){
+  const all=ROUTINE_DEF.every(r=>S.routine.checks[r.id]);
+  const t=todayStr();
+  if(all && S.routine.lastDone!==t){
+    const y=new Date(); y.setDate(y.getDate()-1);
+    const ys=y.getFullYear()+"-"+String(y.getMonth()+1).padStart(2,"0")+"-"+String(y.getDate()).padStart(2,"0");
+    S.routine.streak = (S.routine.lastDone===ys) ? (S.routine.streak||0)+1 : 1;
+    S.routine.lastDone=t;
+    toast("🎉 本日のルーティン全達成!");
+  }
+}
+$("repPlus").onclick=()=>{ S.routine.rep=(S.routine.rep||0)+1; if(S.routine.rep>=5) S.routine.checks["d1"]=true; markDirty(); renderToday(); };
+$("repMinus").onclick=()=>{ S.routine.rep=Math.max(0,(S.routine.rep||0)-1); markDirty(); renderToday(); };
+$("qAdd").onclick=()=>{
+  const u=$("qUrl").value.trim(); const m=$("qMemo").value.trim();
+  if(!u && !m){ toast("URLかメモを入力してください"); return; }
+  S.ideas.unshift({id:uid(), url:u, title:"", memo:m, status:"new", created:todayStr()});
+  $("qUrl").value=""; $("qMemo").value="";
+  markDirty(); renderIdeas(); toast("ネタに登録しました");
+};
+function renderQuickDrafts(){
+  const wrap=$("quickDrafts"); wrap.innerHTML="";
+  const unused=S.drafts.filter(d=>!d.used);
+  $("unusedBadge").textContent=unused.length;
+  $("quickDraftsEmpty").style.display=unused.length?"none":"block";
+  unused.slice(0,3).forEach(d=>{
+    const div=document.createElement("div"); div.className="item";
+    div.innerHTML=`<div class="drafttext">${esc(d.text)}</div>
+      <div class="ops"><button class="btn sm pri">コピー</button><button class="btn sm">投稿済みにする</button></div>`;
+    const [bc,bu]=div.querySelectorAll("button");
+    bc.onclick=()=>copyText(d.text);
+    bu.onclick=()=>{ d.used=true; d.usedDate=todayStr(); markDirty(); renderToday(); renderDrafts(); };
+    wrap.appendChild(div);
+  });
+}
+
+/* ===================== 巡回 ===================== */
+function renderSites(){
+  const t=todayStr(); const wrap=$("siteList"); wrap.innerHTML="";
+  const cats=[...new Set(S.sites.map(s=>s.cat))];
+  let v=0;
+  cats.forEach(cat=>{
+    const cs=S.sites.filter(s=>s.cat===cat);
+    const sec=document.createElement("div"); sec.className="sitecat";
+    sec.innerHTML=`<h3>${esc(cat)}</h3>`;
+    cs.forEach(s=>{
+      const visited=s.visited===t; if(visited)v++;
+      const row=document.createElement("div"); row.className="site"+(visited?" v":"");
+      row.innerHTML=`<input type="checkbox" ${visited?"checked":""}><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}</a><button class="del">✕</button>`;
+      row.querySelector("input").onchange=ev=>{ s.visited=ev.target.checked?t:""; markDirty(); renderSites(); };
+      row.querySelector("a").addEventListener("click",()=>{ if(!visited){ s.visited=t; markDirty(); setTimeout(renderSites,300); }});
+      row.querySelector(".del").onclick=()=>{ if(confirm(s.name+" を削除しますか?")){ S.sites=S.sites.filter(x=>x.id!==s.id); markDirty(); renderSites(); }};
+      sec.appendChild(row);
+    });
+    wrap.appendChild(sec);
+  });
+  $("siteBadge").textContent=v+"/"+S.sites.length;
+}
+$("sAdd").onclick=()=>{
+  const n=$("sName").value.trim(), u=$("sUrl").value.trim();
+  if(!n||!u){ toast("名前とURLを入力してください"); return; }
+  S.sites.push({id:uid(), cat:$("sCat").value, name:n, url:u, visited:""});
+  $("sName").value=""; $("sUrl").value="";
+  markDirty(); renderSites(); toast("追加しました");
+};
+
+/* ===================== ネタ ===================== */
+let ideaFilter="all";
+function ideaPrompt(idea){
+  return `以下の記事をもとに、X(Twitter)向けの投稿案を「切り口の違う5パターン」作ってください。
+
+記事URL: ${idea.url||"(URLなし、メモ参照)"}
+${idea.title?("タイトル: "+idea.title+"\n"):""}メモ(私の視点): ${idea.memo||"特になし"}
+
+条件:
+- 各案は「140字程度の本文」+「ぶら下げスレッド(2〜3投稿)」のセット
+- 切り口の例: 速報解説 / 自分の実践に引きつけた体験接続(AIでの業務効率化・ツール自作、自宅のNAS/ネットワークでの生活自動化、新サービスを実際に試した検証) / 「普通の会社員が日常でどう使えるか」の翻訳 / 賛否が分かれる論点の問いかけ / 従来のやり方との比較
+- 専門用語は噛み砕く。自然で簡潔な文章。大げさな表現や煽りは使わない
+- 外部リンクは本文に入れず「スレッド最後に置く前提」で構成
+- 最後にリプライが付きやすい一言(問いかけ)を添える案を最低1つ入れる`;
+}
+function renderIdeas(){
+  const wrap=$("ideaList"); wrap.innerHTML="";
+  const stLbl={new:"未処理",drafted:"投稿案あり",posted:"投稿済み"};
+  const list=S.ideas.filter(i=>ideaFilter==="all"||i.status===ideaFilter);
+  if(!list.length){ wrap.innerHTML='<div class="muted" style="text-align:center;padding:20px">該当するネタがありません</div>'; }
+  list.forEach(idea=>{
+    const div=document.createElement("div"); div.className="item";
+    div.innerHTML=`
+      <div class="top"><span class="st ${idea.status}">${stLbl[idea.status]}</span>
+        <span class="ttl">${esc(idea.title||idea.memo||"(無題)")}</span>
+        <span class="muted mono">${esc(idea.created)}</span></div>
+      ${idea.url?`<a class="url" href="${esc(idea.url)}" target="_blank" rel="noopener">${esc(idea.url)}</a>`:""}
+      ${idea.memo&&idea.title?`<div class="memo">${esc(idea.memo)}</div>`:""}
+      <div class="ops">
+        <button class="btn sm pri">🤖 Claude依頼文をコピー</button>
+        <select class="btn sm" style="width:auto">
+          <option value="new" ${idea.status==="new"?"selected":""}>未処理</option>
+          <option value="drafted" ${idea.status==="drafted"?"selected":""}>投稿案あり</option>
+          <option value="posted" ${idea.status==="posted"?"selected":""}>投稿済み</option>
+        </select>
+        <button class="btn sm warn">削除</button>
+      </div>`;
+    const [bp, , bd]=div.querySelectorAll("button");
+    bp.onclick=()=>{ copyText(ideaPrompt(idea)); if(idea.status==="new"){} };
+    div.querySelector("select").onchange=ev=>{ idea.status=ev.target.value; markDirty(); renderIdeas(); };
+    bd.onclick=()=>{ if(confirm("このネタを削除しますか?")){ S.ideas=S.ideas.filter(x=>x.id!==idea.id); markDirty(); renderIdeas(); renderDraftIdeaSel(); }};
+    wrap.appendChild(div);
+  });
+  renderDraftIdeaSel();
+  renderEvergreen();
+}
+$("iAdd").onclick=()=>{
+  const u=$("iUrl").value.trim(), t=$("iTitle").value.trim(), m=$("iMemo").value.trim();
+  if(!u&&!t&&!m){ toast("いずれかを入力してください"); return; }
+  S.ideas.unshift({id:uid(), url:u, title:t, memo:m, status:"new", created:todayStr()});
+  $("iUrl").value="";$("iTitle").value="";$("iMemo").value="";
+  markDirty(); renderIdeas(); toast("登録しました");
+};
+$("ideaFilter").addEventListener("click",ev=>{
+  if(ev.target.dataset.f){ ideaFilter=ev.target.dataset.f;
+    document.querySelectorAll("#ideaFilter button").forEach(b=>b.classList.toggle("on",b===ev.target));
+    renderIdeas(); }
+});
+function renderEvergreen(){
+  const wrap=$("evList"); wrap.innerHTML="";
+  S.evergreen.forEach(e=>{
+    const div=document.createElement("label"); div.className="chk"+(e.used?" done":"");
+    div.innerHTML=`<input type="checkbox" ${e.used?"checked":""}><span class="lbl">${esc(e.text)}</span>`;
+    div.querySelector("input").onchange=ev=>{ e.used=ev.target.checked; markDirty(); renderEvergreen(); };
+    wrap.appendChild(div);
+  });
+  $("evBadge").textContent=S.evergreen.filter(e=>!e.used).length+"本";
+}
+$("evAdd").onclick=()=>{
+  const t=$("evNew").value.trim(); if(!t) return;
+  S.evergreen.push({id:uid(), text:t, used:false});
+  $("evNew").value=""; markDirty(); renderEvergreen();
+};
+
+/* ===================== 投稿案 ===================== */
+let draftFilter="unused";
+function renderDraftIdeaSel(){
+  const sel=$("dIdea"); const cur=sel.value;
+  sel.innerHTML='<option value="">紐づけるネタ(任意)</option>';
+  S.ideas.filter(i=>i.status!=="posted").forEach(i=>{
+    const o=document.createElement("option"); o.value=i.id;
+    o.textContent=(i.title||i.memo||i.url||"(無題)").slice(0,40);
+    sel.appendChild(o);
+  });
+  sel.value=cur;
+}
+function renderDrafts(){
+  const wrap=$("draftList"); wrap.innerHTML="";
+  const list=S.drafts.filter(d=> draftFilter==="all" || (draftFilter==="used")===!!d.used );
+  if(!list.length){ wrap.innerHTML='<div class="muted" style="text-align:center;padding:20px">該当する投稿案がありません</div>'; }
+  list.forEach(d=>{
+    const idea=S.ideas.find(i=>i.id===d.ideaId);
+    const div=document.createElement("div"); div.className="item"+(d.used?" used":"");
+    div.innerHTML=`
+      <div class="top">${idea?`<span class="st drafted">${esc((idea.title||idea.memo||"ネタ").slice(0,20))}</span>`:""}
+        <span class="muted mono">${esc(d.created)}${d.used?(" → "+esc(d.usedDate)+" 投稿"):""}</span></div>
+      <div class="drafttext">${esc(d.text)}</div>
+      <div class="ops">
+        <button class="btn sm pri">コピー</button>
+        <button class="btn sm">${d.used?"未使用に戻す":"投稿済みにする"}</button>
+        <button class="btn sm warn">削除</button>
+      </div>`;
+    const [bc,bu,bd]=div.querySelectorAll("button");
+    bc.onclick=()=>copyText(d.text);
+    bu.onclick=()=>{ d.used=!d.used; d.usedDate=d.used?todayStr():""; markDirty(); renderDrafts(); renderToday(); };
+    bd.onclick=()=>{ if(confirm("削除しますか?")){ S.drafts=S.drafts.filter(x=>x.id!==d.id); markDirty(); renderDrafts(); renderToday(); }};
+    wrap.appendChild(div);
+  });
+}
+$("dAdd").onclick=()=>{
+  const t=$("dText").value.trim(); if(!t){ toast("本文を入力してください"); return; }
+  const ideaId=$("dIdea").value;
+  S.drafts.unshift({id:uid(), ideaId, text:t, used:false, created:todayStr()});
+  if(ideaId){ const i=S.ideas.find(x=>x.id===ideaId); if(i&&i.status==="new") i.status="drafted"; }
+  $("dText").value="";
+  markDirty(); renderDrafts(); renderToday(); renderIdeas(); toast("保存しました");
+};
+$("draftFilter").addEventListener("click",ev=>{
+  if(ev.target.dataset.f){ draftFilter=ev.target.dataset.f;
+    document.querySelectorAll("#draftFilter button").forEach(b=>b.classList.toggle("on",b===ev.target));
+    renderDrafts(); }
+});
+
+/* ===================== 実績 ===================== */
+function engRate(r){ return r.imp>0 ? ((r.like+r.rep+r.rt)/r.imp*100) : 0; }
+function erClass(v){ return v<0.3?"er-bad":(v>1?"er-good":"er-mid"); }
+function renderStats(){
+  const tb=$("recBody"); tb.innerHTML="";
+  const sorted=[...S.records].sort((a,b)=>b.date.localeCompare(a.date));
+  sorted.forEach(r=>{
+    const er=engRate(r);
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td class="l mono">${esc(r.date.slice(5))}</td>
+      <td class="l"><span class="posttxt" title="${esc(r.text)}">${esc(r.text)}</span></td>
+      <td class="mono">${r.imp.toLocaleString()}</td><td class="mono">${r.like}</td>
+      <td class="mono">${r.rep}</td><td class="mono">${r.rt}</td>
+      <td class="mono ${erClass(er)}">${er.toFixed(2)}%</td>
+      <td><button class="btn sm warn">✕</button></td>`;
+    tr.querySelector("button").onclick=()=>{ if(confirm("この記録を削除しますか?")){ S.records=S.records.filter(x=>x.id!==r.id); markDirty(); renderStats(); }};
+    tb.appendChild(tr);
+  });
+  // 14日チャート
+  const chart=$("chart"), lbl=$("chartLbl"); chart.innerHTML=""; lbl.innerHTML="";
+  const days=[]; for(let i=13;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i);
+    days.push(d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")); }
+  const sums=days.map(d=>S.records.filter(r=>r.date===d).reduce((a,r)=>a+r.imp,0));
+  const max=Math.max(...sums,1);
+  days.forEach((d,i)=>{
+    const bar=document.createElement("div"); bar.className="bar";
+    bar.style.height=Math.max(2,Math.round(sums[i]/max*82))+"px";
+    if(!sums[i]) bar.style.opacity=".18";
+    bar.innerHTML=`<span class="mono">${sums[i].toLocaleString()}</span>`;
+    chart.appendChild(bar);
+    const l=document.createElement("div"); l.textContent=d.slice(8).replace(/^0/,""); lbl.appendChild(l);
+  });
+  // 分析ログ
+  const al=$("aList"); al.innerHTML="";
+  S.analyses.forEach(a=>{
+    const div=document.createElement("div"); div.className="analysis";
+    div.innerHTML=`<div class="d mono">${esc(a.date)} <button class="btn sm warn" style="float:right">✕</button></div><div class="b">${esc(a.text)}</div>`;
+    div.querySelector("button").onclick=()=>{ if(confirm("削除しますか?")){ S.analyses=S.analyses.filter(x=>x.id!==a.id); markDirty(); renderStats(); }};
+    al.appendChild(div);
+  });
+}
+$("rAdd").onclick=()=>{
+  const date=$("rDate").value||todayStr();
+  const text=$("rText").value.trim();
+  const imp=+($("rImp").value||0), like=+($("rLike").value||0), rep=+($("rRep").value||0), rt=+($("rRt").value||0);
+  if(!text&&!imp){ toast("投稿内容かインプ数を入力してください"); return; }
+  S.records.push({id:uid(), date, text, imp, like, rep, rt});
+  ["rText","rImp","rLike","rRep","rRt"].forEach(i=>$(i).value="");
+  markDirty(); renderStats(); toast("記録しました");
+};
+$("weeklyPrompt").onclick=()=>{
+  const wk=new Date(); wk.setDate(wk.getDate()-7);
+  const from=wk.getFullYear()+"-"+String(wk.getMonth()+1).padStart(2,"0")+"-"+String(wk.getDate()).padStart(2,"0");
+  const recs=S.records.filter(r=>r.date>=from).sort((a,b)=>a.date.localeCompare(b.date));
+  if(!recs.length){ toast("直近7日の記録がありません"); return; }
+  const lines=recs.map(r=>`- ${r.date} | インプ${r.imp} いいね${r.like} リプ${r.rep} RP${r.rt} エンゲ率${engRate(r).toFixed(2)}% | ${r.text}`).join("\n");
+  const p=`X運用の週次分析をお願いします。以下は直近7日間の投稿実績です。
+
+${lines}
+
+分析してほしいこと:
+1. 伸びた投稿と伸びなかった投稿の違い(テーマ・切り口・書き出し・時間帯)
+2. エンゲ率0.3%未満の投稿は「内容のどこに問題があったか」
+3. 来週試すべき改善アクションを3つ(具体的に)
+4. 私の勝ちパターンとして蓄積すべき法則があれば一言で
+
+専門用語は噛み砕き、簡潔に。大げさな表現は不要です。`;
+  copyText(p);
+};
+$("aAdd").onclick=()=>{
+  const t=$("aText").value.trim(); if(!t){ toast("分析結果を貼り付けてください"); return; }
+  S.analyses.unshift({id:uid(), date:todayStr(), text:t});
+  $("aText").value=""; markDirty(); renderStats(); toast("保存しました");
+};
+
+/* ===================== 設定 ===================== */
+$("gasSave").onclick=()=>{
+  const u=$("gasUrl").value.trim();
+  if(u && !/^https:\/\/script\.google\.com\//.test(u)){ toast("GASのURL形式ではないようです"); return; }
+  if(u) localStorage.setItem(LS_GAS,u); else localStorage.removeItem(LS_GAS);
+  toast(u?"URLを保存しました":"URLを削除しました");
+};
+$("cloudLoad").onclick=()=>cloudLoad(false);
+$("cloudSave").onclick=()=>cloudSave(false);
+$("expJson").onclick=()=>{
+  const blob=new Blob([JSON.stringify(S,null,1)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="snsDash_"+todayStr()+".json"; a.click(); URL.revokeObjectURL(a.href);
+};
+$("impJson").onclick=()=>$("impFile").click();
+$("impFile").onchange=ev=>{
+  const f=ev.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{ try{ S=Object.assign(defaultState(),JSON.parse(r.result)); dailyReset(); renderAll(); markDirty(); toast("インポートしました"); }catch(e){ toast("読み込み失敗: 不正なJSON"); } };
+  r.readAsText(f); ev.target.value="";
+};
+$("resetAll").onclick=()=>{
+  if(confirm("全データを初期化します。クラウド側は消えませんが、この端末のデータは消えます。よろしいですか?")
+    && confirm("本当に初期化しますか?")){
+    S=defaultState(); dailyReset(); renderAll(); persist(); toast("初期化しました");
+  }
+};
+const FIXED_PROMPTS={
+  summary:`以下の記事を要約してください。
+
+条件:
+- 3行で要点、その下に「Xで発信するならどこが切り口になるか」を2つ
+- 専門用語は噛み砕く。自然で簡潔な文章で
+- 記事URL: (ここに貼る)`,
+  reply:`以下の私の投稿に付いたリプライへの返信案を3つください。
+
+私の投稿: (ここに貼る)
+相手のリプ: (ここに貼る)
+
+条件: 会話が続くように、感想+軽い問いかけを含める。自然で簡潔に、大げさな表現は使わない。`,
+  rewrite:`以下の文章を、Xの投稿として自然で読みやすく推敲してください。
+
+(ここに貼る)
+
+条件: 140字程度。専門用語は噛み砕く。簡潔に、大げさな表現や煽りは使わない。言いたいことは変えない。`
+};
+document.querySelectorAll("[data-pt]").forEach(b=>b.onclick=()=>copyText(FIXED_PROMPTS[b.dataset.pt]));
+
+/* ===================== ナビ・初期化 ===================== */
+$("nav").addEventListener("click",ev=>{
+  const b=ev.target.closest("button"); if(!b) return;
+  document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.id==="tab-"+b.dataset.t));
+  window.scrollTo(0,0);
+});
+function renderAll(){ renderToday(); renderSites(); renderIdeas(); renderDrafts(); renderStats();
+  $("gasUrl").value=localStorage.getItem(LS_GAS)||"";
+  $("rDate").value=todayStr();
+}
+(function init(){
+  try{ const ls=localStorage.getItem(LS_KEY); if(ls) S=Object.assign(defaultState(),JSON.parse(ls)); }catch(e){ console.error(e); }
+  dailyReset(); renderAll();
+  if(localStorage.getItem(LS_GAS)) cloudLoad(true); else setSync("","GAS未設定(端末内保存)");
+  // 日付跨ぎの自動リセット監視
+  setInterval(()=>{ if(S.routine.date!==todayStr()){ dailyReset(); renderAll(); } document.querySelectorAll(".slot").forEach(el=>el.classList.toggle("now",el.dataset.s===currentSlot())); },60000);
+})();
+</script>
+</body>
+</html>
