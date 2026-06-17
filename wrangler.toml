@@ -1,0 +1,6 @@
+name = "my-project"
+compatibility_date = "2026-06-13"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "."
